@@ -11,11 +11,7 @@ const Board: FC = () => {
   return (
     <BoardStyle>
       {Object.keys(columns).map((column) => (
-        <Column
-          column={columns[column].column}
-          columnTitle={columns[column].columnTitle}
-          key={columns[column].column}
-        />
+        <Column column={columns[column].column} key={columns[column].column} />
       ))}
     </BoardStyle>
   );
