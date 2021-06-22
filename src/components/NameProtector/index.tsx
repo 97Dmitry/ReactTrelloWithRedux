@@ -13,7 +13,6 @@ const NameProtector: FC = () => {
 
   function nameSaveHandler(event: React.KeyboardEvent<HTMLInputElement>) {
     if (event.code === "Enter" && inputName.length > 0) {
-      localStorage.setItem("username", inputName);
       dispatch(saveUsername(inputName));
       setIsActive(0);
     }
