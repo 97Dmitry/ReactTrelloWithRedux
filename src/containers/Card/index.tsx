@@ -4,7 +4,8 @@ import styled from "styled-components";
 import { useAppSelector, useAppDispatch } from "store/hooks";
 import { deleteCard, selectorCard } from "store/columnSlice";
 
-import CardPopUp from "components/CardPopUp";
+import CardPopUp from "containers/CardPopUp";
+import DeleteButton from "../../components/UI/DeleteButton";
 
 interface CardInterface {
   column: string;
@@ -26,10 +27,13 @@ const Card: FC<CardInterface> = ({ cardID, column, columnTitle }) => {
         onClick={() => setPopUpIsActive(() => !popUpIsActive)}
         data-type="Card"
       >
-        <CardText>{card.title}</CardText>
-        <Delete onClick={cardDeleteHandler}>
-          <i className="material-icons">delete</i>
-        </Delete>
+        <CardText>
+          <p>{card.title}</p>
+          <DeleteButton onClick={cardDeleteHandler}>
+            <i className="material-icons">delete</i>
+          </DeleteButton>
+        </CardText>
+
         {Object.keys(card.comments).length ? (
           <>
             <hr style={{ border: "1px solid black", marginTop: "5px" }} />
@@ -67,20 +71,9 @@ const CardComponent = styled.div`
   }
 `;
 
-const CardText = styled.p`
-  padding-right: 15px;
+const CardText = styled.div`
+  display: flex;
+  justify-content: space-between;
   word-break: break-word;
   word-wrap: break-word;
-`;
-
-const Delete = styled.button`
-  display: block;
-  position: absolute;
-  right: 0;
-  top: 0;
-  background: none;
-
-  &:hover {
-    color: red;
-  }
 `;

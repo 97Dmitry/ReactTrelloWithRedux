@@ -4,9 +4,12 @@ import styled from "styled-components";
 
 import { useAppSelector, useAppDispatch } from "store/hooks";
 import { createComment, selectorCard } from "store/columnSlice";
+import { selectUsername } from "store/userSlice";
 
 import Comment from "./Comment";
-import { selectUsername } from "store/usernameSlice";
+
+import TextArea from "components/UI/TextArea";
+import SuccessButton from "components/UI/SuccessButton";
 
 interface CommentsInterface {
   column: string;
@@ -53,14 +56,15 @@ const Comments: FC<CommentsInterface> = ({ column, cardID }) => {
       ) : null}
 
       <p style={{ marginBottom: "10px" }}>Input comment: </p>
-      <CommentInput
+      <TextArea
+        styled={{ rows: 2 }}
         value={commentInput}
         onChange={(event) => {
           setCommentInput(event.target.value);
         }}
         placeholder={"Write something"}
       />
-      <AddButton
+      <SuccessButton
         onClick={() => {
           if (commentInput.length) {
             commentSaveHandler();
@@ -69,7 +73,7 @@ const Comments: FC<CommentsInterface> = ({ column, cardID }) => {
         }}
       >
         Add comment
-      </AddButton>
+      </SuccessButton>
     </>
   );
 };
@@ -77,29 +81,9 @@ const Comments: FC<CommentsInterface> = ({ column, cardID }) => {
 export default Comments;
 
 const AllComments = styled.div`
-  max-height: 400px;
+  max-height: 320px;
   overflow: scroll;
   ::-webkit-scrollbar {
     width: 0;
   }
-`;
-
-const CommentInput = styled.textarea`
-  border: #2a2a2a 1px solid;
-  border-radius: 15px;
-  padding: 10px;
-
-  width: 40%;
-
-  resize: none;
-`;
-
-const AddButton = styled.button`
-  display: block;
-
-  height: 30px;
-  width: 100px;
-  background: green;
-  color: white;
-  border-radius: 20px;
 `;

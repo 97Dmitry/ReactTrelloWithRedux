@@ -1,10 +1,12 @@
 import { FC, useState } from "react";
 import styled from "styled-components";
-import { Button, TextareaAutosize } from "@material-ui/core";
 
 import { useAppDispatch, useAppSelector } from "store/hooks";
-import { selectUsername } from "store/usernameSlice";
+import { selectUsername } from "store/userSlice";
 import { changeComment, deleteComment, selectorCard } from "store/columnSlice";
+
+import TextArea from "components/UI/TextArea";
+import DeleteButton from "components/UI/DeleteButton";
 
 interface CommentInterface {
   commentID: string;
@@ -48,35 +50,22 @@ const Comment: FC<CommentInterface> = ({ commentID, cardID, column }) => {
         }}
       >
         <p>Comment:</p>
-        <TextareaAutosize
-          value={commentInput}
-          style={{
-            width: "95%",
-            fontSize: "20px",
-            resize: "none",
-          }}
-          onFocus={(event) => {
-            event.target.style.outline = "2px solid #0079bf";
-          }}
-          onChange={(event) => {
-            setCommentInput(event.target.value);
-          }}
-          onBlur={(event) => {
-            event.target.style.outline = "none";
-            changeCommentHandler();
-          }}
-        />
-
+        <CommentLine>
+          <TextArea
+            styled={{ rows: 1, width: 98 }}
+            value={commentInput}
+            onChange={(event) => {
+              setCommentInput(event.target.value);
+            }}
+            onBlur={() => {
+              changeCommentHandler();
+            }}
+          />
+          <DeleteButton onClick={commentDeleteHandler}>
+            <i className="material-icons">delete</i>
+          </DeleteButton>
+        </CommentLine>
         <p>Author: {author}</p>
-      </div>
-      <div style={{ display: "flex", flexDirection: "column" }}>
-        <Button
-          variant="contained"
-          color="secondary"
-          onClick={commentDeleteHandler}
-        >
-          Delete
-        </Button>
       </div>
     </CommentComponent>
   );
@@ -91,6 +80,11 @@ const CommentComponent = styled.div`
   margin-top: 4px;
   word-wrap: break-word;
 
+  display: flex;
+  justify-content: space-between;
+`;
+
+const CommentLine = styled.div`
   display: flex;
   justify-content: space-between;
 `;
