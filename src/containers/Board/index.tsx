@@ -4,7 +4,7 @@ import styled from "styled-components";
 import { useAppSelector } from "store/hooks";
 import { selectorColumns } from "store/columnSlice";
 
-import Column from "components/Column";
+import Column from "containers/Column";
 
 const Board: FC = () => {
   const columns = useAppSelector(selectorColumns);

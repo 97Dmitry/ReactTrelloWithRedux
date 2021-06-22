@@ -2,7 +2,7 @@ import { FC, useState } from "react";
 import styled from "styled-components";
 
 import { useAppDispatch, useAppSelector } from "store/hooks";
-import { saveUsername, selectUsername } from "store/usernameSlice";
+import { saveUsername, selectUsername } from "store/userSlice";
 
 const NameProtector: FC = () => {
   const username = useAppSelector(selectUsername);

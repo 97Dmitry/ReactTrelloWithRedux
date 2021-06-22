@@ -1,11 +1,11 @@
 import { FC, useState } from "react";
 import styled from "styled-components";
-import { Button } from "@material-ui/core";
 
 import { selectorCard, createDescription } from "store/columnSlice";
 import { useAppSelector, useAppDispatch } from "store/hooks";
 
 import TextArea from "components/UI/TextArea";
+import SuccessButton from "components/UI/SuccessButton";
 
 interface DescriptionInterface {
   column: string;
@@ -29,11 +29,8 @@ const Description: FC<DescriptionInterface> = ({ column, cardID }) => {
       <Title>Card description: </Title>
       <TextArea
         value={descriptionInput}
-        styled={{ rows: 3 }}
+        styled={{ rows: 2 }}
         placeholder={"Write card description"}
-        onFocus={(event) => {
-          event.target.style.outline = "2px solid #0079bf";
-        }}
         onChange={(event) => {
           setDescriptionInput(event.target.value);
         }}
@@ -41,13 +38,9 @@ const Description: FC<DescriptionInterface> = ({ column, cardID }) => {
           event.target.style.outline = "none";
         }}
       />
-      <Button
-        variant="contained"
-        color="primary"
-        onClick={changeDescriptionHandler}
-      >
+      <SuccessButton onClick={changeDescriptionHandler}>
         Save or change
-      </Button>
+      </SuccessButton>
     </DescriptionComponent>
   );
 };

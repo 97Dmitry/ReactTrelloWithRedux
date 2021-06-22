@@ -1,7 +1,7 @@
 import { FC } from "react";
 import styled from "styled-components";
 
-import Board from "./components/Board";
+import Board from "./containers/Board";
 import NameProtector from "./components/NameProtector";
 
 const App: FC = (): any => {

@@ -4,7 +4,7 @@ import styled from "styled-components";
 import { useAppSelector, useAppDispatch } from "store/hooks";
 import { cardNameChanger, selectorCard } from "store/columnSlice";
 
-import Comments from "./Comments";
+import Comments from "components/Comments";
 import Description from "components/Description";
 
 import TextArea from "components/UI/TextArea";
@@ -106,7 +106,7 @@ const Content = styled.div`
   width: 50%;
   padding: 20px;
   border-radius: 15px;
-  background: white;
+  background: #ebecf0;
 `;
 
 const CloseButton = styled.button`

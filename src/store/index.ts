@@ -4,7 +4,7 @@ import {
   Action,
   getDefaultMiddleware,
 } from "@reduxjs/toolkit";
-import usernameSlice from "./usernameSlice";
+import usernameSlice from "./userSlice";
 import columnSlice from "./columnSlice";
 
 const middleware = getDefaultMiddleware({

@@ -9,7 +9,10 @@ import {
   selectorColumn,
 } from "store/columnSlice";
 
-import Card from "components/Card";
+import Card from "containers/Card";
+
+import TextArea from "components/UI/TextArea";
+import SuccessButton from "components/UI/SuccessButton";
 
 interface ColumnProps {
   column: string;
@@ -72,14 +75,15 @@ const Column: FC<ColumnProps> = ({ column }) => {
       </CardList>
       {isAddCard ? (
         <>
-          <Input
+          <TextArea
+            styled={{ rows: 3 }}
             placeholder={"Input card name"}
             value={cardNameInput}
             onChange={(event) => {
               setCardNameInput(event.target.value);
             }}
           />
-          <AddButton onClick={cardSaveHandler}>Add</AddButton>
+          <SuccessButton onClick={cardSaveHandler}>Add</SuccessButton>
           <CloseButton
             onClick={() => {
               setIsAddCard(!isAddCard);
@@ -152,22 +156,7 @@ const Button = styled.button<ButtonProps>`
   }
 `;
 
-const Input = styled.textarea`
-  box-shadow: 1px 5px 10px 2px rgba(34, 60, 80, 0.2);
-  width: 100%;
-  min-height: 80px;
-  padding: 10px;
-  margin-bottom: 5px;
-`;
-
 const buttonHeight = "32px";
-
-const AddButton = styled.button`
-  background: #0079bf;
-  padding: 5px 25px;
-  border-radius: 15px;
-  height: ${buttonHeight};
-`;
 
 const CloseButton = styled.button`
   width: 40px;

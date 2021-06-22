@@ -9,7 +9,7 @@ const initialState: iState = {
   username: "",
 };
 
-export const appSlice = createSlice({
+export const userSlice = createSlice({
   name: "username",
   initialState,
   reducers: {
@@ -19,9 +19,8 @@ export const appSlice = createSlice({
   },
 });
 
-export default appSlice.reducer;
+export default userSlice.reducer;
 
-export const selectUsername = (state: RootState) =>
-  state.usernameState.username;
+export const selectUsername = (state: RootState) => state.userState.username;
 
-export const { saveUsername } = appSlice.actions;
+export const { saveUsername } = userSlice.actions;
