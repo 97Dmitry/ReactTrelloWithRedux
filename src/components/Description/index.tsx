@@ -1,55 +1,41 @@
 import { FC, useState } from "react";
 import styled from "styled-components";
-import { Button, TextareaAutosize } from "@material-ui/core";
+import { Button } from "@material-ui/core";
 
-import { lStorage } from "utils";
+import { selectorCard, createDescription } from "store/columnSlice";
+import { useAppSelector, useAppDispatch } from "store/hooks";
 
-const DescriptionComponent = styled.div`
-  margin: 10px 0;
-`;
+import TextArea from "components/UI/TextArea";
 
 interface DescriptionInterface {
   column: string;
   cardID: string;
-  cardsInfo: Record<string, any>;
-  setCardsInfo: React.Dispatch<Record<string, any>>;
 }
-const Description: FC<DescriptionInterface> = ({
-  column,
-  cardID,
-  cardsInfo,
-  setCardsInfo,
-}) => {
-  const [description, setDescription] = useState(
-    lStorage(column)[cardID]["description"] || ""
-  );
+
+const Description: FC<DescriptionInterface> = ({ column, cardID }) => {
+  const card = useAppSelector(selectorCard(cardID, column));
+  const dispatch = useAppDispatch();
+
+  const [descriptionInput, setDescriptionInput] = useState(card.description);
 
   function changeDescriptionHandler() {
-    setCardsInfo(() => {
-      const data = { ...cardsInfo };
-      data[cardID]["description"] = description;
-      lStorage(column, { ...data });
-      return data;
-    });
+    dispatch(
+      createDescription({ description: descriptionInput, cardID, column })
+    );
   }
 
   return (
     <DescriptionComponent>
-      <p style={{ marginBottom: "10px" }}>Card description: </p>
-      <TextareaAutosize
-        value={description}
-        rowsMin={3}
+      <Title>Card description: </Title>
+      <TextArea
+        value={descriptionInput}
+        styled={{ rows: 3 }}
         placeholder={"Write card description"}
-        style={{
-          width: "100%",
-          fontSize: "20px",
-          resize: "none",
-        }}
         onFocus={(event) => {
           event.target.style.outline = "2px solid #0079bf";
         }}
         onChange={(event) => {
-          setDescription(event.target.value);
+          setDescriptionInput(event.target.value);
         }}
         onBlur={(event) => {
           event.target.style.outline = "none";
@@ -67,3 +53,11 @@ const Description: FC<DescriptionInterface> = ({
 };
 
 export default Description;
+
+const DescriptionComponent = styled.div`
+  margin: 10px 0;
+`;
+
+const Title = styled.p`
+  margin-bottom: 10px;
+`;

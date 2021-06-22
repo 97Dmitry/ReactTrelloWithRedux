@@ -2,37 +2,39 @@ import { FC, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 import styled from "styled-components";
 
-import { lStorage } from "utils";
+import { useAppSelector, useAppDispatch } from "store/hooks";
+import {
+  changeColumnName,
+  createCard,
+  selectorColumn,
+} from "store/columnSlice";
+
 import Card from "components/Card";
-import { useAppSelector } from "../../store/hooks";
-import { selectorColumn } from "../../store/columnSlice";
 
 interface ColumnProps {
   column: string;
-  columnTitle: string;
 }
 
-const Column: FC<ColumnProps> = ({ column, columnTitle }) => {
+const Column: FC<ColumnProps> = ({ column }) => {
+  const columnState = useAppSelector(selectorColumn(column));
+  const dispatch = useAppDispatch();
   const [isAddCard, setIsAddCard] = useState(false);
   const [cardNameInput, setCardNameInput] = useState("");
-  const [name, setName] = useState(lStorage(column)?.name || columnTitle);
-  const [isChangeName, setIsChangeName] = useState(false);
-  const [cardsInfo, setCardsInfo] = useState<Record<string, any>>(
-    lStorage(column) || {}
+  const [columnNameInput, setColumnNameInput] = useState(
+    columnState.columnTitle
   );
+  const [isChangeName, setIsChangeName] = useState(false);
 
   function cardSaveHandler() {
     if (cardNameInput.length) {
-      setCardsInfo(() => {
-        const data = { ...cardsInfo };
-        data[uuidv4()] = {
-          title: cardNameInput,
-          description: "",
-          comments: {},
-        };
-        lStorage(column, { ...data });
-        return data;
-      });
+      const id = uuidv4();
+      dispatch(
+        createCard({
+          column,
+          cardID: id,
+          card: { title: cardNameInput, comments: {}, description: "" },
+        })
+      );
       setIsAddCard(!isAddCard);
       setCardNameInput("");
     }
@@ -42,36 +44,28 @@ const Column: FC<ColumnProps> = ({ column, columnTitle }) => {
     <ColumnWrapper data-column={column}>
       {!isChangeName ? (
         <ColumnTitle onDoubleClick={() => setIsChangeName(!isChangeName)}>
-          {name}
+          {columnState.columnTitle}
         </ColumnTitle>
       ) : (
         <ColumnNameInput
-          value={name}
-          onChange={(event) => setName(event.target.value)}
+          value={columnNameInput}
+          onChange={(event) => setColumnNameInput(event.target.value)}
           onBlur={() => {
             setIsChangeName(!isChangeName);
-            setCardsInfo(() => {
-              const data = { ...cardsInfo };
-              data.name = name;
-              lStorage(column, { ...data });
-              return data;
-            });
+            dispatch(changeColumnName({ column, newName: columnNameInput }));
           }}
         />
       )}
       <CardList>
-        {Object.keys(cardsInfo)
+        {Object.keys(columnState.cards)
           .filter((id: string) => id.length > 15)
           .map((id: string) => {
             return (
               <Card
-                cardName={cardsInfo[id].title}
                 key={id}
                 cardID={id}
                 column={column}
-                columnTitle={name}
-                cardsInfo={{ ...cardsInfo }}
-                setCardsInfo={setCardsInfo}
+                columnTitle={columnState.columnTitle}
               />
             );
           })}

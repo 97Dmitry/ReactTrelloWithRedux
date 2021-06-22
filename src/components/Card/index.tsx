@@ -1,68 +1,48 @@
 import { FC, useState } from "react";
 import styled from "styled-components";
 
+import { useAppSelector, useAppDispatch } from "store/hooks";
+import { deleteCard, selectorCard } from "store/columnSlice";
+
 import CardPopUp from "components/CardPopUp";
-import { lStorage } from "utils";
 
 interface CardInterface {
-  cardName: string;
   column: string;
   columnTitle: string;
   cardID: string;
-  cardsInfo: Record<string, any>;
-  setCardsInfo: React.Dispatch<Record<string, any>>;
 }
 
-const Card: FC<CardInterface> = ({
-  cardName,
-  cardID,
-  column,
-  columnTitle,
-  cardsInfo,
-  setCardsInfo,
-}) => {
+const Card: FC<CardInterface> = ({ cardID, column, columnTitle }) => {
+  const card = useAppSelector(selectorCard(cardID, column));
+  const dispatch = useAppDispatch();
   const [popUpIsActive, setPopUpIsActive] = useState(false);
-  const [cardNameState, setCardNameState] = useState(cardName);
 
   function cardDeleteHandler() {
-    setCardsInfo(() => {
-      const data = { ...cardsInfo };
-      delete data[cardID];
-      lStorage(column, { ...data });
-      return data;
-    });
+    dispatch(deleteCard({ column, cardID }));
   }
-
   return (
     <>
       <CardComponent
         onClick={() => setPopUpIsActive(() => !popUpIsActive)}
         data-type="Card"
       >
-        <CardText>{cardNameState}</CardText>
+        <CardText>{card.title}</CardText>
         <Delete onClick={cardDeleteHandler}>
           <i className="material-icons">delete</i>
         </Delete>
-        {Object.keys(cardsInfo[cardID]["comments"]).length ? (
+        {Object.keys(card.comments).length ? (
           <>
             <hr style={{ border: "1px solid black", marginTop: "5px" }} />
             <br />
-            <p>
-              Comments count:{" "}
-              {Object.keys(cardsInfo[cardID]["comments"]).length}
-            </p>
+            <p>Comments count: {Object.keys(card.comments).length}</p>
           </>
         ) : null}
       </CardComponent>
       {popUpIsActive ? (
         <CardPopUp
-          cardName={cardNameState}
-          setCardName={setCardNameState}
           cardID={cardID}
           column={column}
           columnTitle={columnTitle}
-          cardsInfo={cardsInfo}
-          setCardsInfo={setCardsInfo}
           isActive={popUpIsActive}
           setIsActive={setPopUpIsActive}
         />

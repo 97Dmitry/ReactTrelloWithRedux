@@ -2,43 +2,39 @@ import { FC, useState } from "react";
 import styled from "styled-components";
 import { Button, TextareaAutosize } from "@material-ui/core";
 
-import { lStorage } from "utils";
+import { useAppDispatch, useAppSelector } from "store/hooks";
+import { selectUsername } from "store/usernameSlice";
+import { changeComment, deleteComment, selectorCard } from "store/columnSlice";
 
 interface CommentInterface {
   commentID: string;
   column: string;
   cardID: string;
-  cardsInfo: Record<string, any>;
-  setCardsInfo: React.Dispatch<Record<string, any>>;
 }
 
-const Comment: FC<CommentInterface> = ({
-  commentID,
-  cardID,
-  column,
-  cardsInfo,
-  setCardsInfo,
-}) => {
-  const [comment, setComment] = useState(
-    cardsInfo[cardID]["comments"][commentID]["comment"]
+const Comment: FC<CommentInterface> = ({ commentID, cardID, column }) => {
+  const author = useAppSelector(selectUsername);
+  const card = useAppSelector(selectorCard(cardID, column));
+  const dispatch = useAppDispatch();
+
+  const [commentInput, setCommentInput] = useState(
+    card.comments[commentID].comment
   );
 
   function changeCommentHandler() {
-    setCardsInfo(() => {
-      const data = { ...cardsInfo };
-      data[cardID]["comments"][commentID]["comment"] = comment;
-      lStorage(column, { ...data });
-      return data;
-    });
+    dispatch(
+      changeComment({
+        commentID,
+        comment: commentInput,
+        column,
+        cardID,
+        author,
+      })
+    );
   }
 
   function commentDeleteHandler() {
-    setCardsInfo(() => {
-      const data = { ...cardsInfo };
-      delete data[cardID]["comments"][commentID];
-      lStorage(column, { ...data });
-      return data;
-    });
+    dispatch(deleteComment({ commentID, cardID, column }));
   }
 
   return (
@@ -53,7 +49,7 @@ const Comment: FC<CommentInterface> = ({
       >
         <p>Comment:</p>
         <TextareaAutosize
-          value={comment}
+          value={commentInput}
           style={{
             width: "95%",
             fontSize: "20px",
@@ -63,7 +59,7 @@ const Comment: FC<CommentInterface> = ({
             event.target.style.outline = "2px solid #0079bf";
           }}
           onChange={(event) => {
-            setComment(event.target.value);
+            setCommentInput(event.target.value);
           }}
           onBlur={(event) => {
             event.target.style.outline = "none";
@@ -71,7 +67,7 @@ const Comment: FC<CommentInterface> = ({
           }}
         />
 
-        <p>Author: {cardsInfo[cardID]["comments"][commentID]["author"]}</p>
+        <p>Author: {author}</p>
       </div>
       <div style={{ display: "flex", flexDirection: "column" }}>
         <Button

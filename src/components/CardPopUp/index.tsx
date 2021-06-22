@@ -1,34 +1,34 @@
-import React, { useEffect } from "react";
-import TextareaAutosize from "@material-ui/core/TextareaAutosize";
-
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
-import { lStorage } from "utils";
+
+import { useAppSelector, useAppDispatch } from "store/hooks";
+import { cardNameChanger, selectorCard } from "store/columnSlice";
+
 import Comments from "./Comments";
 import Description from "components/Description";
 
+import TextArea from "components/UI/TextArea";
+
 interface CardPopUpInterface {
-  cardName: string;
-  setCardName: React.Dispatch<string>;
   column: string;
   columnTitle: string;
   cardID: string;
-  cardsInfo: Record<string, any>;
-  setCardsInfo: React.Dispatch<Record<string, any>>;
   isActive: boolean;
   setIsActive: React.Dispatch<boolean>;
 }
 
 const CardPopUp: React.FC<CardPopUpInterface> = ({
-  cardName,
-  setCardName,
   column,
   columnTitle,
   cardID,
-  cardsInfo,
-  setCardsInfo,
   isActive,
   setIsActive,
 }) => {
+  const card = useAppSelector(selectorCard(cardID, column));
+  const dispatch = useAppDispatch();
+
+  const [cardNameInput, setCardNameInput] = useState<string>(card.title);
+
   useEffect(() => {
     const escFunction = (event: KeyboardEvent) => {
       if (isActive && event.code === "Escape") {
@@ -43,12 +43,7 @@ const CardPopUp: React.FC<CardPopUpInterface> = ({
   }, [isActive, setIsActive]);
 
   function cardNameChangeHandler() {
-    setCardsInfo(() => {
-      const data = { ...cardsInfo };
-      data[cardID]["title"] = cardName;
-      lStorage(column, { ...data });
-      return data;
-    });
+    dispatch(cardNameChanger({ cardID, column, newName: cardNameInput }));
   }
 
   return (
@@ -61,18 +56,14 @@ const CardPopUp: React.FC<CardPopUpInterface> = ({
       <Content>
         <>
           <strong>Card name:</strong>
-          <TextareaAutosize
-            style={{
-              width: "100%",
-              fontSize: "20px",
-              resize: "none",
-            }}
+          <TextArea
+            styled={{ rows: 1 }}
             onFocus={(event) => {
               event.target.style.outline = "2px solid #0079bf";
             }}
-            value={cardName}
+            value={cardNameInput}
             onChange={(event) => {
-              setCardName((cardName = event.target.value));
+              setCardNameInput(event.target.value);
             }}
             onBlur={(event) => {
               event.target.style.outline = "none";
@@ -81,29 +72,13 @@ const CardPopUp: React.FC<CardPopUpInterface> = ({
           />
         </>
         <p>
-          in column:{" "}
-          <span style={{ fontSize: "18px", fontWeight: 700 }}>
-            {columnTitle}
-          </span>
+          in column: <SpanFrom>{columnTitle}</SpanFrom>
         </p>
         <p>
-          Author:{" "}
-          <span style={{ fontSize: "18px", fontWeight: 700 }}>
-            {localStorage.getItem("username")}
-          </span>
+          Author: <SpanFrom>{localStorage.getItem("username")}</SpanFrom>
         </p>
-        <Description
-          cardID={cardID}
-          column={column}
-          cardsInfo={cardsInfo}
-          setCardsInfo={setCardsInfo}
-        />
-        <Comments
-          cardID={cardID}
-          column={column}
-          cardsInfo={cardsInfo}
-          setCardsInfo={setCardsInfo}
-        />
+        <Description cardID={cardID} column={column} />
+        <Comments cardID={cardID} column={column} />
       </Content>
     </CardPopUpComponent>
   );
@@ -140,4 +115,9 @@ const CloseButton = styled.button`
   top: 10vh;
 
   background: none;
+`;
+
+const SpanFrom = styled.span`
+  font-size: 18px;
+  font-weight: 700;
 `;
