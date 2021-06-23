@@ -1,4 +1,8 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import {
+  createDraftSafeSelector,
+  createSlice,
+  PayloadAction,
+} from "@reduxjs/toolkit";
 import { RootState } from "./index";
 
 interface iComments {
@@ -137,22 +141,40 @@ export const columnSlice = createSlice({
   },
 });
 
-export default columnSlice.reducer;
+// SELECTORS
 
-export const selectorColumn =
-  (column: string) =>
-  (state: RootState): iColumn => {
-    return state.columnState[column];
-  };
+const selectSelf = (state: RootState) => state;
 
-export const selectorColumns = (state: RootState) => {
-  return state.columnState;
-};
-export const selectorCard =
-  (cardID: string, column: string) => (state: RootState) => {
+// export const selectorColumns = (state: RootState) => {
+//   return state.columnState;
+// };
+export const selectorColumns = createDraftSafeSelector(
+  selectSelf,
+  (state: RootState) => {
+    return state.columnState;
+  }
+);
+
+// export const selectorCard =
+//   (cardID: string, column: string) => (state: RootState) => {
+//     return state.columnState[column].cards[cardID];
+//   };
+export const selectorCard = (cardID: string, column: string) =>
+  createDraftSafeSelector(selectSelf, (state: RootState) => {
     return state.columnState[column].cards[cardID];
-  };
+  });
 
+// export const selectorColumn =
+//   (column: string) =>
+//   (state: RootState): iColumn => {
+//     return state.columnState[column];
+//   };
+export const selectorColumn = (column: string) =>
+  createDraftSafeSelector(selectSelf, (state: RootState): iColumn => {
+    return state.columnState[column];
+  });
+
+export default columnSlice.reducer;
 export const {
   createColumn,
   changeColumnName,
