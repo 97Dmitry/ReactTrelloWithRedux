@@ -2,6 +2,8 @@ import { FC, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 import styled from "styled-components";
 
+import { Form, Field } from "react-final-form";
+
 import { useAppSelector, useAppDispatch } from "store/hooks";
 import {
   changeColumnName,
@@ -13,6 +15,7 @@ import Card from "containers/Card";
 
 import TextArea from "components/UI/TextArea";
 import SuccessButton from "components/UI/SuccessButton";
+import Required, { required } from "components/UI/Required";
 
 interface ColumnProps {
   column: string;
@@ -22,25 +25,26 @@ const Column: FC<ColumnProps> = ({ column }) => {
   const columnState = useAppSelector(selectorColumn(column));
   const dispatch = useAppDispatch();
   const [isAddCard, setIsAddCard] = useState(false);
-  const [cardNameInput, setCardNameInput] = useState("");
-  const [columnNameInput, setColumnNameInput] = useState(
-    columnState.columnTitle
-  );
   const [isChangeName, setIsChangeName] = useState(false);
 
-  function cardSaveHandler() {
-    if (cardNameInput.length) {
+  function cardSaveHandler(values: Record<string, string>) {
+    if (values.cardName.length) {
       const id = uuidv4();
       dispatch(
         createCard({
           column,
           cardID: id,
-          card: { title: cardNameInput, comments: {}, description: "" },
+          card: { title: values.cardName, comments: {}, description: "" },
         })
       );
       setIsAddCard(!isAddCard);
-      setCardNameInput("");
     }
+  }
+  function columnNameChangeHandler(values: Record<string, string>) {
+    if (values.columnTitle.length) {
+      dispatch(changeColumnName({ column, newName: values.columnTitle }));
+    }
+    setIsChangeName(!isChangeName);
   }
 
   return (
@@ -50,14 +54,30 @@ const Column: FC<ColumnProps> = ({ column }) => {
           {columnState.columnTitle}
         </ColumnTitle>
       ) : (
-        <ColumnNameInput
-          value={columnNameInput}
-          onChange={(event) => setColumnNameInput(event.target.value)}
-          onBlur={() => {
-            setIsChangeName(!isChangeName);
-            dispatch(changeColumnName({ column, newName: columnNameInput }));
-          }}
-        />
+        <>
+          <Form
+            onSubmit={columnNameChangeHandler}
+            initialValues={columnState}
+            render={({ handleSubmit }) => (
+              <form onSubmit={handleSubmit}>
+                <Field name={"columnTitle"} validate={required}>
+                  {({ input, meta }) => (
+                    <>
+                      <ColumnNameInput
+                        {...input}
+                        onBlur={() => {
+                          handleSubmit();
+                          setIsChangeName(!isChangeName);
+                        }}
+                      />
+                      <Required metaData={meta} />
+                    </>
+                  )}
+                </Field>
+              </form>
+            )}
+          />
+        </>
       )}
       <CardList>
         {Object.keys(columnState.cards)
@@ -75,23 +95,34 @@ const Column: FC<ColumnProps> = ({ column }) => {
       </CardList>
       {isAddCard ? (
         <>
-          <TextArea
-            styled={{ rows: 3 }}
-            placeholder={"Input card name"}
-            value={cardNameInput}
-            onChange={(event) => {
-              setCardNameInput(event.target.value);
-            }}
+          <Form
+            onSubmit={cardSaveHandler}
+            render={({ handleSubmit }) => (
+              <form onSubmit={handleSubmit}>
+                <Field name={"cardName"} validate={required}>
+                  {({ input, meta }) => (
+                    <>
+                      <TextArea
+                        {...input}
+                        styled={{ rows: 3 }}
+                        placeholder={"Input card name"}
+                      />
+                      <Required metaData={meta} />
+                    </>
+                  )}
+                </Field>
+                <SuccessButton type={"submit"}>Add</SuccessButton>
+                <CloseButton
+                  type={"button"}
+                  onClick={() => {
+                    setIsAddCard(!isAddCard);
+                  }}
+                >
+                  <i className="material-icons">edit_off</i>
+                </CloseButton>
+              </form>
+            )}
           />
-          <SuccessButton onClick={cardSaveHandler}>Add</SuccessButton>
-          <CloseButton
-            onClick={() => {
-              setIsAddCard(!isAddCard);
-              setCardNameInput("");
-            }}
-          >
-            <i className="material-icons">edit_off</i>
-          </CloseButton>
         </>
       ) : (
         <Button
