@@ -1,6 +1,7 @@
-import { FC, useState } from "react";
+import { FC } from "react";
 import { v4 as uuidv4 } from "uuid";
 import styled from "styled-components";
+import { Form, Field } from "react-final-form";
 
 import { useAppSelector, useAppDispatch } from "store/hooks";
 import { createComment, selectorCard } from "store/columnSlice";
@@ -10,6 +11,7 @@ import Comment from "./Comment";
 
 import TextArea from "components/UI/TextArea";
 import SuccessButton from "components/UI/SuccessButton";
+import Required, { required } from "components/UI/Required";
 
 interface CommentsInterface {
   column: string;
@@ -20,19 +22,19 @@ const Comments: FC<CommentsInterface> = ({ column, cardID }) => {
   const author = useAppSelector(selectUsername);
   const dispatch = useAppDispatch();
 
-  const [commentInput, setCommentInput] = useState("");
-
-  function commentSaveHandler() {
-    const id = uuidv4();
-    dispatch(
-      createComment({
-        comment: commentInput,
-        commentID: id,
-        column,
-        cardID,
-        author,
-      })
-    );
+  function commentSaveHandler(value: Record<string, string>) {
+    if (value.comment.length) {
+      const id = uuidv4();
+      dispatch(
+        createComment({
+          comment: value.comment,
+          commentID: id,
+          column,
+          cardID,
+          author,
+        })
+      );
+    }
   }
 
   return (
@@ -56,24 +58,34 @@ const Comments: FC<CommentsInterface> = ({ column, cardID }) => {
       ) : null}
 
       <p style={{ marginBottom: "10px" }}>Input comment: </p>
-      <TextArea
-        styled={{ rows: 2 }}
-        value={commentInput}
-        onChange={(event) => {
-          setCommentInput(event.target.value);
-        }}
-        placeholder={"Write something"}
+      <Form
+        onSubmit={commentSaveHandler}
+        render={({ handleSubmit, form }) => (
+          <form onSubmit={handleSubmit}>
+            <Field name={"comment"} validate={required}>
+              {({ input, meta }) => (
+                <>
+                  <TextArea
+                    {...input}
+                    styled={{ rows: 2 }}
+                    placeholder={"Write something"}
+                  />
+                  <Required metaData={meta} />
+                  <SuccessButton
+                    type={"button"}
+                    onClick={() => {
+                      handleSubmit();
+                      form.restart();
+                    }}
+                  >
+                    Add comment
+                  </SuccessButton>
+                </>
+              )}
+            </Field>
+          </form>
+        )}
       />
-      <SuccessButton
-        onClick={() => {
-          if (commentInput.length) {
-            commentSaveHandler();
-            setCommentInput("");
-          }
-        }}
-      >
-        Add comment
-      </SuccessButton>
     </>
   );
 };

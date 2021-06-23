@@ -1,5 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import styled from "styled-components";
+import { Form, Field } from "react-final-form";
 
 import { useAppSelector, useAppDispatch } from "store/hooks";
 import { cardNameChanger, selectorCard } from "store/columnSlice";
@@ -8,6 +9,7 @@ import Comments from "components/Comments";
 import Description from "components/Description";
 
 import TextArea from "components/UI/TextArea";
+import Required, { required } from "components/UI/Required";
 
 interface CardPopUpInterface {
   column: string;
@@ -27,8 +29,6 @@ const CardPopUp: React.FC<CardPopUpInterface> = ({
   const card = useAppSelector(selectorCard(cardID, column));
   const dispatch = useAppDispatch();
 
-  const [cardNameInput, setCardNameInput] = useState<string>(card.title);
-
   useEffect(() => {
     const escFunction = (event: KeyboardEvent) => {
       if (isActive && event.code === "Escape") {
@@ -42,8 +42,10 @@ const CardPopUp: React.FC<CardPopUpInterface> = ({
     };
   }, [isActive, setIsActive]);
 
-  function cardNameChangeHandler() {
-    dispatch(cardNameChanger({ cardID, column, newName: cardNameInput }));
+  function cardNameChangeHandler(value: Record<string, string>) {
+    if (value.title.length) {
+      dispatch(cardNameChanger({ cardID, column, newName: value.title }));
+    }
   }
 
   return (
@@ -56,19 +58,28 @@ const CardPopUp: React.FC<CardPopUpInterface> = ({
       <Content>
         <>
           <strong>Card name:</strong>
-          <TextArea
-            styled={{ rows: 1 }}
-            onFocus={(event) => {
-              event.target.style.outline = "2px solid #0079bf";
-            }}
-            value={cardNameInput}
-            onChange={(event) => {
-              setCardNameInput(event.target.value);
-            }}
-            onBlur={(event) => {
-              event.target.style.outline = "none";
-              cardNameChangeHandler();
-            }}
+          <Form
+            onSubmit={cardNameChangeHandler}
+            initialValues={card}
+            render={({ handleSubmit, form }) => (
+              <form>
+                <Field name={"title"} validate={required}>
+                  {({ input, meta }) => (
+                    <>
+                      <TextArea
+                        {...input}
+                        styled={{ rows: 1 }}
+                        onBlur={() => {
+                          handleSubmit();
+                          form.restart();
+                        }}
+                      />
+                      <Required metaData={meta} />
+                    </>
+                  )}
+                </Field>
+              </form>
+            )}
           />
         </>
         <p>
