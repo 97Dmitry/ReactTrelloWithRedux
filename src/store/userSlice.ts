@@ -1,4 +1,8 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import {
+  createDraftSafeSelector,
+  createSlice,
+  PayloadAction,
+} from "@reduxjs/toolkit";
 import { RootState } from "./index";
 
 interface iState {
@@ -19,8 +23,12 @@ export const userSlice = createSlice({
   },
 });
 
+const selectSelf = (state: RootState) => state;
+
+export const selectUsername = createDraftSafeSelector(
+  selectSelf,
+  (state: RootState) => state.userState.username
+);
+
 export default userSlice.reducer;
-
-export const selectUsername = (state: RootState) => state.userState.username;
-
 export const { saveUsername } = userSlice.actions;
