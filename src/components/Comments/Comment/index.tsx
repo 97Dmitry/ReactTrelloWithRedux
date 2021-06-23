@@ -1,5 +1,6 @@
-import { FC, useState } from "react";
+import { FC } from "react";
 import styled from "styled-components";
+import { Form, Field } from "react-final-form";
 
 import { useAppDispatch, useAppSelector } from "store/hooks";
 import { selectUsername } from "store/userSlice";
@@ -7,6 +8,7 @@ import { changeComment, deleteComment, selectorCard } from "store/columnSlice";
 
 import TextArea from "components/UI/TextArea";
 import DeleteButton from "components/UI/DeleteButton";
+import Required, { required } from "components/UI/Required";
 
 interface CommentInterface {
   commentID: string;
@@ -19,20 +21,18 @@ const Comment: FC<CommentInterface> = ({ commentID, cardID, column }) => {
   const card = useAppSelector(selectorCard(cardID, column));
   const dispatch = useAppDispatch();
 
-  const [commentInput, setCommentInput] = useState(
-    card.comments[commentID].comment
-  );
-
-  function changeCommentHandler() {
-    dispatch(
-      changeComment({
-        commentID,
-        comment: commentInput,
-        column,
-        cardID,
-        author,
-      })
-    );
+  function changeCommentHandler(value: Record<string, string>) {
+    if (value.comment.length) {
+      dispatch(
+        changeComment({
+          commentID,
+          comment: value.comment,
+          column,
+          cardID,
+          author,
+        })
+      );
+    }
   }
 
   function commentDeleteHandler() {
@@ -51,15 +51,28 @@ const Comment: FC<CommentInterface> = ({ commentID, cardID, column }) => {
       >
         <p>Comment:</p>
         <CommentLine>
-          <TextArea
-            styled={{ rows: 1, width: 98 }}
-            value={commentInput}
-            onChange={(event) => {
-              setCommentInput(event.target.value);
-            }}
-            onBlur={() => {
-              changeCommentHandler();
-            }}
+          <Form
+            onSubmit={changeCommentHandler}
+            initialValues={card.comments[commentID]}
+            render={({ handleSubmit, form }) => (
+              <InputForm>
+                <Field name={"comment"} validate={required}>
+                  {({ input, meta }) => (
+                    <>
+                      <TextArea
+                        {...input}
+                        styled={{ rows: 1 }}
+                        onBlur={() => {
+                          handleSubmit();
+                          form.reset();
+                        }}
+                      />
+                      <Required metaData={meta} />
+                    </>
+                  )}
+                </Field>
+              </InputForm>
+            )}
           />
           <DeleteButton onClick={commentDeleteHandler}>
             <i className="material-icons">delete</i>
@@ -87,4 +100,8 @@ const CommentComponent = styled.div`
 const CommentLine = styled.div`
   display: flex;
   justify-content: space-between;
+`;
+
+const InputForm = styled.form`
+  width: 100%;
 `;

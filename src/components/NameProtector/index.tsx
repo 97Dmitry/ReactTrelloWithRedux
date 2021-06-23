@@ -1,19 +1,21 @@
 import { FC, useState } from "react";
 import styled from "styled-components";
+import { Form, Field } from "react-final-form";
 
 import { useAppDispatch, useAppSelector } from "store/hooks";
 import { saveUsername, selectUsername } from "store/userSlice";
+
+import Required, { required } from "components/UI/Required";
 
 const NameProtector: FC = () => {
   const username = useAppSelector(selectUsername);
   const dispatch = useAppDispatch();
 
-  const [inputName, setInputName] = useState<string>(username);
   const [isActive, setIsActive] = useState<number>(username.length ? 0 : 1);
 
-  function nameSaveHandler(event: React.KeyboardEvent<HTMLInputElement>) {
-    if (event.code === "Enter" && inputName.length > 0) {
-      dispatch(saveUsername(inputName));
+  function nameSaveHandler(value: Record<string, string>) {
+    if (value.name.length) {
+      dispatch(saveUsername(value.name));
       setIsActive(0);
     }
   }
@@ -22,10 +24,27 @@ const NameProtector: FC = () => {
     <NameProtectorComponent isActive={isActive}>
       <Content>
         <Title>Choose your username</Title>
-        <Input
-          value={inputName}
-          onChange={(event) => setInputName(event.target.value)}
-          onKeyPress={nameSaveHandler}
+        <Form
+          onSubmit={nameSaveHandler}
+          render={({ handleSubmit }) => (
+            <form onSubmit={handleSubmit}>
+              <Field name={"name"} validate={required}>
+                {({ input, meta }) => (
+                  <>
+                    <Input
+                      {...input}
+                      onKeyPress={(event) => {
+                        if (event.code === "Enter") {
+                          handleSubmit();
+                        }
+                      }}
+                    />
+                    <Required metaData={meta} />
+                  </>
+                )}
+              </Field>
+            </form>
+          )}
         />
       </Content>
     </NameProtectorComponent>
@@ -64,7 +83,6 @@ const Title = styled.div`
 `;
 
 const Input = styled.input.attrs({
-  type: "text",
   placeholder: "Username",
 })`
   box-shadow: 1px 5px 10px 2px rgba(34, 60, 80, 0.2);
