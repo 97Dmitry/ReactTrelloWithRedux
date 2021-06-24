@@ -5,11 +5,11 @@ import { Form, Field } from "react-final-form";
 import { useAppSelector, useAppDispatch } from "store/hooks";
 import { cardNameChanger, selectorCard } from "store/columnSlice";
 
-import Comments from "components/Comments";
-import Description from "components/Description";
+import Comments from "views/components/Comments";
+import Description from "views/components/Description";
 
-import TextArea from "components/UI/TextArea";
-import Required, { required } from "components/UI/Required";
+import TextArea from "views/components/UI/TextArea";
+import Required, { required } from "views/components/UI/Required";
 
 interface CardPopUpInterface {
   column: string;

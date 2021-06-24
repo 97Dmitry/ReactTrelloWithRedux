@@ -4,8 +4,8 @@ import styled from "styled-components";
 import { useAppSelector, useAppDispatch } from "store/hooks";
 import { deleteCard, selectorCard } from "store/columnSlice";
 
-import CardPopUp from "containers/CardPopUp";
-import DeleteButton from "../../components/UI/DeleteButton";
+import CardPopUp from "views/containers/CardPopUp";
+import DeleteButton from "views/components/UI/DeleteButton";
 
 interface CardInterface {
   column: string;

@@ -5,9 +5,9 @@ import { Form, Field } from "react-final-form";
 import { selectorCard, createDescription } from "store/columnSlice";
 import { useAppSelector, useAppDispatch } from "store/hooks";
 
-import TextArea from "components/UI/TextArea";
-import SuccessButton from "components/UI/SuccessButton";
-import Required, { required } from "components/UI/Required";
+import TextArea from "views/components/UI/TextArea";
+import SuccessButton from "views/components/UI/SuccessButton";
+import Required, { required } from "views/components/UI/Required";
 
 interface DescriptionInterface {
   column: string;

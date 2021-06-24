@@ -5,7 +5,7 @@ import { Form, Field } from "react-final-form";
 import { useAppDispatch, useAppSelector } from "store/hooks";
 import { saveUsername, selectUsername } from "store/userSlice";
 
-import Required, { required } from "components/UI/Required";
+import Required, { required } from "views/components/UI/Required";
 
 const NameProtector: FC = () => {
   const username = useAppSelector(selectUsername);
