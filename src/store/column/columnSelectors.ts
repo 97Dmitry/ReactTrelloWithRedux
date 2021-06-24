@@ -1,6 +1,6 @@
 import { RootState } from "../index";
 import { createSelector } from "@reduxjs/toolkit";
-import { iCard, iColumn, State } from "./columnInterfaces";
+import { iCard, iColumn, State } from "./iColumn";
 
 const selectSelf = (state: RootState) => state;
 
