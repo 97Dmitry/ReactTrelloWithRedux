@@ -3,8 +3,9 @@ import styled from "styled-components";
 import { Form, Field } from "react-final-form";
 
 import { useAppDispatch, useAppSelector } from "store/hooks";
-import { selectUsername } from "store/userSlice";
-import { changeComment, deleteComment, selectorCard } from "store/columnSlice";
+import { selectUsername } from "store/user/userSelectors";
+import { changeComment, deleteComment } from "store/column/columnSlice";
+import { selectorCard } from "store/column/columnSelectors";
 
 import TextArea from "views/components/UI/TextArea";
 import DeleteButton from "views/components/UI/DeleteButton";
@@ -41,14 +42,7 @@ const Comment: FC<CommentInterface> = ({ commentID, cardID, column }) => {
 
   return (
     <CommentComponent>
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "space-between",
-          width: "100%",
-        }}
-      >
+      <Wrapper>
         <p>Comment:</p>
         <CommentLine>
           <Form
@@ -79,7 +73,7 @@ const Comment: FC<CommentInterface> = ({ commentID, cardID, column }) => {
           </DeleteButton>
         </CommentLine>
         <p>Author: {author}</p>
-      </div>
+      </Wrapper>
     </CommentComponent>
   );
 };
@@ -95,6 +89,13 @@ const CommentComponent = styled.div`
 
   display: flex;
   justify-content: space-between;
+`;
+
+const Wrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 100%;
 `;
 
 const CommentLine = styled.div`

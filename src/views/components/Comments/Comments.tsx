@@ -4,10 +4,11 @@ import styled from "styled-components";
 import { Form, Field } from "react-final-form";
 
 import { useAppSelector, useAppDispatch } from "store/hooks";
-import { createComment, selectorCard } from "store/columnSlice";
-import { selectUsername } from "store/userSlice";
+import { createComment } from "store/column/columnSlice";
+import { selectorCard } from "store/column/columnSelectors";
+import { selectUsername } from "store/user/userSelectors";
 
-import Comment from "views/components/Comment";
+import { Comment } from "views/components/Comment";
 import TextArea from "views/components/UI/TextArea";
 import SuccessButton from "views/components/UI/SuccessButton";
 import Required, { required } from "views/components/UI/Required";
