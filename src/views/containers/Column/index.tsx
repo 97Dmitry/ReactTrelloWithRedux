@@ -11,11 +11,11 @@ import {
   selectorColumn,
 } from "store/columnSlice";
 
-import Card from "containers/Card";
+import Card from "views/containers/Card";
 
-import TextArea from "components/UI/TextArea";
-import SuccessButton from "components/UI/SuccessButton";
-import Required, { required } from "components/UI/Required";
+import TextArea from "views/components/UI/TextArea";
+import SuccessButton from "views/components/UI/SuccessButton";
+import Required, { required } from "views/components/UI/Required";
 
 interface ColumnProps {
   column: string;

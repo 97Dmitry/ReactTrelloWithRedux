@@ -7,11 +7,10 @@ import { useAppSelector, useAppDispatch } from "store/hooks";
 import { createComment, selectorCard } from "store/columnSlice";
 import { selectUsername } from "store/userSlice";
 
-import Comment from "./Comment";
-
-import TextArea from "components/UI/TextArea";
-import SuccessButton from "components/UI/SuccessButton";
-import Required, { required } from "components/UI/Required";
+import Comment from "views/components/Comment";
+import TextArea from "views/components/UI/TextArea";
+import SuccessButton from "views/components/UI/SuccessButton";
+import Required, { required } from "views/components/UI/Required";
 
 interface CommentsInterface {
   column: string;

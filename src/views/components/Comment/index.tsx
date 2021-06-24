@@ -6,9 +6,9 @@ import { useAppDispatch, useAppSelector } from "store/hooks";
 import { selectUsername } from "store/userSlice";
 import { changeComment, deleteComment, selectorCard } from "store/columnSlice";
 
-import TextArea from "components/UI/TextArea";
-import DeleteButton from "components/UI/DeleteButton";
-import Required, { required } from "components/UI/Required";
+import TextArea from "views/components/UI/TextArea";
+import DeleteButton from "views/components/UI/DeleteButton";
+import Required, { required } from "views/components/UI/Required";
 
 interface CommentInterface {
   commentID: string;
