@@ -3,7 +3,8 @@ import styled from "styled-components";
 import { Form, Field } from "react-final-form";
 
 import { useAppDispatch, useAppSelector } from "store/hooks";
-import { saveUsername, selectUsername } from "store/userSlice";
+import { saveUsername } from "store/user/userSlice";
+import { selectUsername } from "store/user/userSelectors";
 
 import Required, { required } from "views/components/UI/Required";
 

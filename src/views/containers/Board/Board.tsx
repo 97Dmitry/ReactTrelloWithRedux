@@ -2,9 +2,9 @@ import { FC } from "react";
 import styled from "styled-components";
 
 import { useAppSelector } from "store/hooks";
-import { selectorColumns } from "store/columnSlice";
+import { selectorColumns } from "store/column/columnSelectors";
 
-import Column from "views/containers/Column";
+import { Column } from "views/containers/Column";
 
 const Board: FC = () => {
   const columns = useAppSelector(selectorColumns);

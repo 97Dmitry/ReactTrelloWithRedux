@@ -17,8 +17,8 @@ import {
 } from "redux-persist";
 import storage from "redux-persist/lib/storage";
 
-import userSlice from "./userSlice";
-import columnSlice from "./columnSlice";
+import userSlice from "./user/userSlice";
+import columnSlice from "./column/columnSlice";
 
 const rootReducer = combineReducers({
   userState: userSlice,
