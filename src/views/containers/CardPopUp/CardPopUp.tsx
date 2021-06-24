@@ -3,10 +3,11 @@ import styled from "styled-components";
 import { Form, Field } from "react-final-form";
 
 import { useAppSelector, useAppDispatch } from "store/hooks";
-import { cardNameChanger, selectorCard } from "store/columnSlice";
+import { cardNameChanger } from "store/column/columnSlice";
+import { selectorCard } from "store/column/columnSelectors";
 
-import Comments from "views/components/Comments";
-import Description from "views/components/Description";
+import { Comments } from "views/components/Comments";
+import { Description } from "views/components/Description";
 
 import TextArea from "views/components/UI/TextArea";
 import Required, { required } from "views/components/UI/Required";

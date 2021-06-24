@@ -5,13 +5,10 @@ import styled from "styled-components";
 import { Form, Field } from "react-final-form";
 
 import { useAppSelector, useAppDispatch } from "store/hooks";
-import {
-  changeColumnName,
-  createCard,
-  selectorColumn,
-} from "store/columnSlice";
+import { changeColumnName, createCard } from "store/column/columnSlice";
+import { selectorColumn } from "store/column/columnSelectors";
 
-import Card from "views/containers/Card";
+import { Card } from "views/containers/Card";
 
 import TextArea from "views/components/UI/TextArea";
 import SuccessButton from "views/components/UI/SuccessButton";

@@ -2,8 +2,9 @@ import { FC } from "react";
 import styled from "styled-components";
 import { Form, Field } from "react-final-form";
 
-import { selectorCard, createDescription } from "store/columnSlice";
 import { useAppSelector, useAppDispatch } from "store/hooks";
+import { createDescription } from "store/column/columnSlice";
+import { selectorCard } from "store/column/columnSelectors";
 
 import TextArea from "views/components/UI/TextArea";
 import SuccessButton from "views/components/UI/SuccessButton";

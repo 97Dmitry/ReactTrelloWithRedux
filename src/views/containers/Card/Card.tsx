@@ -2,9 +2,10 @@ import { FC, useState } from "react";
 import styled from "styled-components";
 
 import { useAppSelector, useAppDispatch } from "store/hooks";
-import { deleteCard, selectorCard } from "store/columnSlice";
+import { deleteCard } from "store/column/columnSlice";
+import { selectorCard } from "store/column/columnSelectors";
 
-import CardPopUp from "views/containers/CardPopUp";
+import { CardPopUp } from "views/containers/CardPopUp";
 import DeleteButton from "views/components/UI/DeleteButton";
 
 interface CardInterface {
