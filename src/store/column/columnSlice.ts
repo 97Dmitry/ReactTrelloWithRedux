@@ -9,7 +9,8 @@ import {
   iDeleteCard,
   iDeleteComment,
   State,
-} from "./columnInterfaces";
+} from "./iColumn";
+
 
 const initialState: State = {
   todo: {
